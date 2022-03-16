@@ -1,12 +1,21 @@
 const express = require("express");
 const app = express();
 const dotenv = require("dotenv");
-const mongoose = require("mongoose");
 const connectDB = require("./database/connect");
-
+const PORT = process.env.PORT|| 5000;
+const authRoute = require("./routes/auth");
+const userRoute = require("./routes/users");
 dotenv.config()
 
-connectDB(process.env.MONGO_URL)
-app.listen("5000", ()=>{
-    console.log("backend is running");
+ //middlewares
+ app.use(express.json());
+
+ app.use(express.urlencoded({extended:true}))
+//routes
+app.use('/api/auth', authRoute);
+app.use('/api/users', userRoute);
+
+connectDB(process.env.MONGO_URL);
+app.listen(PORT , ()=>{
+    console.log(`server is listening at ${PORT}`);
 })
